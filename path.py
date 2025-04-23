@@ -1,34 +1,38 @@
 from shapely.geometry import LineString, Polygon
+from location import Location
 
-# Airport coordinates
-jfk = (-94.0, 41.0)  # (lon, lat)
-lax = (-90.5, 43.0)
+def path(IDs,Sigco):
+    coords=[]
+    interrupts={}
+    cross=0
+    new_coords=[]
+    for sig in Sigco:
+        coords.append(sig["coords"])
 
-# SIGMET polygon (note: shapely uses (lon, lat) as (x, y))
+    for new in coords:
+        shapely_coords = [(point['lon'], point['lat']) for point in new]
+        new_coords.append(shapely_coords)
+  
+    for x in range(len(IDs)-1):
+        ID1=IDs[x]
+        ID2=IDs[x+1]
+        loc=Location(ID1)
+        coord1=loc[1],loc[0]
+        loc=Location(ID2)
+        coord2=loc[1],loc[0]
+        inter={}
+        for sigcoord in new_coords:
+            sigmet_polygon = Polygon(sigcoord)
 
-sigmet_coords = [
-    {'lat': 42.7333, 'lon': -92.8457},
-    {'lat': 42.6346, 'lon': -91.0295},
-    {'lat': 41.2845, 'lon': -91.9228},
-    {'lat': 41.1328, 'lon': -93.4811},
-    {'lat': 42.7333, 'lon': -92.8457}
-]
-
-# Convert to shapely-friendly format
-shapely_coords = [(point['lon'], point['lat']) for point in sigmet_coords]
-
-# Now you can use it to create a Polygon
-
-
-sigmet_polygon = Polygon(shapely_coords)
-
-print(sigmet_polygon)
-
-
-# Create geometry
-flight_path = LineString([jfk, lax])
-
-# Check intersection
-intersects = flight_path.intersects(sigmet_polygon)
-
-print("Flight path crosses SIGMET polygon:", intersects)
+            flight_path = LineString([coord1, coord2])
+           
+            intersects = flight_path.intersects(sigmet_polygon)
+            if intersects == True:
+                new
+                cross += 1
+                inter[cross]=sigmet_polygon
+        inter["status"]=("Flight between "+ ID1 +" and "+ID2+" encounter(s) " + str(cross)+ " SIGMETS")
+        #print(inter)
+        cross=0
+        interrupts[ID1] = inter
+    return interrupts
