@@ -6,6 +6,7 @@ def path(IDs,Sigco):
     interrupts={}
     cross=0
     new_coords=[]
+    summary=[]
     for sig in Sigco:
         coords.append(sig["coords"])
 
@@ -31,8 +32,10 @@ def path(IDs,Sigco):
                 new
                 cross += 1
                 inter[cross]=sigmet_polygon
-        inter["status"]=("Flight between "+ ID1 +" and "+ID2+" encounter(s) " + str(cross)+ " SIGMETS")
+        brief=("Flight between "+ ID1 +" and "+ID2+" encounter(s) " + str(cross)+ " SIGMETS")
+        inter["status"]=brief
+        summary.append(brief)
         #print(inter)
         cross=0
         interrupts[ID1] = inter
-    return interrupts
+    return interrupts,summary
